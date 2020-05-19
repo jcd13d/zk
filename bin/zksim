@@ -53,7 +53,8 @@ def similarity_index(search_index, vectors):
     :return: Returns the index numbers of the decuments in order of similarity
     """
     cosine_similarities = linear_kernel(vectors[search_index], vectors).flatten()
-    return (-cosine_similarities).argsort()
+    sort_index = (-cosine_similarities).argsort()
+    return sort_index, cosine_similarities[sort_index]
 
 
 def relevant_titles(df, title, title_col, text_col):
@@ -67,8 +68,8 @@ def relevant_titles(df, title, title_col, text_col):
     """
     vectors = vectorize_text(df[text_col])
     searching_index = index_from_title(df[title_col], title)
-    sim_index = similarity_index(searching_index, vectors)
-    return df.iloc[sim_index][title_col].values
+    sim_index, sort_sims = similarity_index(searching_index, vectors)
+    return df.iloc[sim_index][title_col].values, sort_sims
 
 
 class MyParser(argparse.ArgumentParser):
@@ -98,8 +99,10 @@ class TfidfSearch:
 
     def application_logic(self, filename):
         df = pd.read_sql("SELECT * FROM zettelkasten WHERE title NOT LIKE 'highlights/%'", con=self.conn)
-        for file in relevant_titles(df, filename, title_col="title", text_col="body")[:self.num_files_to_show]:
-            print(file)
+        files, similarities = relevant_titles(df, filename, title_col="title", text_col="body")
+        for file, sim in zip(files, similarities):
+            print("{:.3f}   {}".format(sim, file))
+            # print(file)
 
     def run(self):
         parser = argparse.ArgumentParser(description='Perform document similarity search based on TF-IDF')
