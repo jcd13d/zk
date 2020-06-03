@@ -7,9 +7,11 @@ The goal of the `zk` repository is to collect scripts and configurations for
 other plain-text Zettelkasten users.
 
 **Note:** This is an on-going extraction from my local environment, but has the
-utilities I use by far the most often. Please open issues if you have questions,
-concerns, comments. I'd also love contributions of scripts to `bin/`, such as
-showing related notes, polish to search, Vim configs, etc.
+utilities I use by far the most often. I can almost guarantee you you're going
+to run into a stacktrace somewhere because of some utility that isn't installed,
+etc. Please open issues if it's not working, or you have questions, concerns,
+comments. I'd also love contributions of scripts to `bin/`, such as showing
+related notes, polish to search, Vim configs, etc.
 
 ![](https://pbs.twimg.com/media/EQGYhAJUYAEPC4j?format=jpg&name=4096x4096)
 
@@ -32,7 +34,11 @@ various scripts to help extract further value.
 `zks`. `fzf`-enabled full-text search (top-right pane in screenshot above) over
 all your notes, using `sqlite`. The index updates automatically based on file
 modification. See the `FZF_DEFAULT_OPTS` below for various key-bindings you can
-use to open splits, copy to clipboard, etc.  directly from here.
+use to open splits in Vim, copy to clipboard, etc.  directly from here. `Alt-S`
+will find similar notes with `zksim`.
+
+`zksim`. Finds similar notes to the note passed as an argument. See [#1][1] for
+more.
 
 `zkt`. `fzf`-enabled tag browser. Pressing enter on a tag will show you notes
 with that tag.  notes, using `sqlite`. See the `FZF_DEFAULT_OPTS` below for
@@ -44,6 +50,8 @@ directly from here.
 
 `zkn`. Create a new note, with an appropriate prefix.
 
+`zk-assets-localize`. Given a file, downloads/copies the markdown images to `media/`.
+
 ## Installation
 
 Clone `zk` and add `bin/` to your `$PATH`:
@@ -54,10 +62,19 @@ $ echo 'export PATH=$PATH:$HOME/zk/bin' >> ~/.bashrc
 $ echo 'export ZK_PATH="$HOME/Zettelkasten"' >> ~/.bashrc
 ```
 
-Install the dependencies with your package manager. MacOS:
+Install the dependencies with your package manager.
 
+MacOS:
 ```bash
 # brew install ripgrep fzf sqlite3 bat
+# gem install sqlite3
+```
+
+Linux:
+
+`build-essential`,`libsqlite3-dev` and `ruby-dev` are needed to install the sqlite3 gem. For example—on Debian/Ubuntu, run:
+```bash
+# apt install ripgrep fzf sqlite3 bat build-essential libsqlite3-dev ruby ruby-dev
 # gem install sqlite3
 ```
 
@@ -91,3 +108,5 @@ export FZF_DEFAULT_OPTS="--height=40% --multi --tiebreak=begin \
     tmux send-keys -t \{left\} Enter \
   ]\""
 ```
+
+[1]: https://github.com/sirupsen/zk/pull/1
